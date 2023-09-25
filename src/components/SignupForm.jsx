@@ -10,6 +10,8 @@ function SignupForm() {
     email: '',
     userName: '',
     password: '',
+    accountNumber: '', 
+    accountBalance: '',
   });
 
   const handleChange = (e) => {
@@ -20,28 +22,46 @@ function SignupForm() {
     });
   };
 
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const userAccount = [JSON.stringify(signupData)] 
-    localStorage.setItem('userData', userAccount )
-  }, [userAccount])
-  
+    const generateAccountNumber = () => {
+      const existingAccountNumber = JSON.parse(localStorage.getItem('accounts')) || [];
+      let newAccountNumber;
 
-  const navigate = useNavigate()
+      do {
+        newAccountNumber = String(Math.floor(1000000000 + Math.random() * 9000000000));
+      } while (existingAccountNumber.some(account => account.accountNumber === newAccountNumber));
+      return newAccountNumber;
+    };
+
+    const newAccountNumber = generateAccountNumber();
+    console.log(newAccountNumber)
+
+    setsignupData({
+      ...signupData,
+      accountNumber: newAccountNumber,
+    });
+  }, []); 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate("/login")
 
-    console.log(userAccount)
+    const savedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];
+
+    savedAccounts.push(signupData);
+
+    localStorage.setItem('accounts', JSON.stringify(savedAccounts));
+
+    alert("Account is Created!");
+    navigate("/login");
   };
-
   
 
   return (
     <>
       <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="gap-10 border-spacing-2">
         <div>
           <label>First Name:</label>
           <input

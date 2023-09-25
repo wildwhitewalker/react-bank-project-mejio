@@ -1,114 +1,123 @@
-import { useState } from "react";  
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
-function LoginForm(props) {
-    //const { setCurrentPage, } = props
-    const [loginData, setLoginData] = useState({
-      username: '',
-      password: '',
+
+function LoginForm({setUser}) {
+  const [loginData, setLoginData] = useState({
+    userName: "",
+    password: "",
+  });
+
+  const [usernameErrorMessage, setUsernameErrorMessage] = useState("");
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setLoginData({
+      ...loginData,
+      [name]: value,
     });
-    
-    const [usernameErrorMessage, setUsernameErrorMessage] = useState('')
-    const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
+  };
 
-    const OnChange = (e) => {
-      const { name, value } = e.target;
-      setLoginData({ 
-        ...loginData,
-        [name]: value,
-      });
-    };
+  const navigate = useNavigate();
 
-    const navigate = useNavigate()
-    const onClick = () => {
-        navigate("/signup")
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    setUsernameErrorMessage("");
+    setPasswordErrorMessage("");
+
+    if (loginData.userName === "") {
+      setUsernameErrorMessage("Username is Empty!");
+      return;
     }
 
-    const OnSubmit = (e) => {
-      e.preventDefault(); 
+    if (loginData.password === "") {
+      setPasswordErrorMessage("Password is Empty!");
+      return;
+    }
 
+    const savedAccounts = JSON.parse(localStorage.getItem("accounts")) || [];
 
-     /* setUsernameErrorMessage() 
-      setPasswordErrorMessage()  
-      
+    const foundUser = savedAccounts.find((account) => {
+      return account.userName === loginData.userName;
+    });
 
-      if (username === '') {
-        setUsernameErrorMessage('Username is Empty!')
-        return
-      }
-  
-      if (password === '') {
-        setPasswordErrorMessage('Password is Empty!')
-        return
-      }*/
+    if (!foundUser) {
+      setUsernameErrorMessage("User does not exist");
+      return;
+    }
 
-      const accounts = JSON.parse(localStorage.getItem('userData'))
-      const currentAccount = accounts.find(account => username === accounts.username)
+    if (foundUser.password !== loginData.password) {
+      setPasswordErrorMessage("Username and password do not match");
+      return;
+    }
 
-      if (!currentAccount) {
-        setUsernameErrorMessage('User does not exist')
-        return
-      }
+    if (
+      foundUser.userName === loginData.userName &&
+      foundUser.password === loginData.password
+    ) {
+      setUser(foundUser.userName); 
+      navigate('/dashboard');
+    }
+  };
+  const OnClick = () => {
+    navigate("/signup");
+  };
 
-      if (currentAccount.password !== loginData.password) {
-        setPasswordErrorMessage('Username and password does not match')
-        return
-      }
+  return (
+    <div className="flex flex-col gap-10 items-center justify-center min-h-screen bg-green-100">
+      <h2 className="text-3xl font-semibold text-green-700">Login</h2>
+      <form onSubmit={onSubmit} className="bg-white p-8 rounded shadow-md max-w-md">
+        <div>
+          <label className="text-gray-700">Username:</label>
+          <input
+            type="text"
+            name="userName"
+            value={loginData.userName}
+            onChange={onChange}
+            className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-green-500"
+          />
+          {usernameErrorMessage && (
+            <small className="text-red-400">{usernameErrorMessage}</small>
+          )}
+        </div>
 
-      if (currentAccount.username === loginData.username && currentAccount.password === loginData.password) {
-        useNavigate("/dashboard")
-      }
+        <div>
+          <label className="text-gray-700">Password:</label>
+          <input
+            type="password"
+            name="password"
+            value={loginData.password}
+            onChange={onChange}
+            className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-green-500"
+          />
+          {passwordErrorMessage && (
+            <small className="text-red-400">{passwordErrorMessage}</small>
+          )}
+        </div>
 
-     
-    };
-   
-   
-
-
-    return (
-      <div className="flex flex-col gap-10 border-spacing-2">
-        <h2>Login</h2>
-        <form onSubmit={OnSubmit}>
-          <div>
-            <label >Username:</label>
-            <input
-              type="text"
-              name="username"
-              value={loginData.username}
-              onChange={OnChange}
-              required
-            />
-            {usernameErrorMessage && (
-          <small className="text-red-700">{usernameErrorMessage}</small>)}
-          </div>
-
-          <div>
-            <label>Password:</label>
-            <input
-              type="password"
-              name="password"
-              value={loginData.password}
-              onChange={OnChange}
-              required
-            />
-           {passwordErrorMessage && (
-          <small className="text-red-700">{passwordErrorMessage}</small>
-        )}
-          </div>
-
-          <button type="submit">Log in</button>
-          <div> <label>
+        <button
+          type="submit"
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 focus:outline-none"
+        >
+          Log in
+        </button>
+        <div>
+          <label className="text-gray-700">
             Don't have an account?
-            <button onClick={onClick} >Signup</button>
+            <button
+              onClick={OnClick}
+              className="text-green-500 hover:underline focus:outline-none"
+            >
+              Signup
+            </button>
           </label>
-          </div>
-         
-        </form>
-      </div>
-    );
-  }
-  
+        </div>
+      </form>
+    </div>
+  );
+}
 
-
-export default LoginForm
+export default LoginForm;

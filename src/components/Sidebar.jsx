@@ -24,7 +24,7 @@ function Sidebar() {
             Help
           </li>
         </ul>
-        <button>
+        <button type="submit">
             Log out 
         </button>
       </div>

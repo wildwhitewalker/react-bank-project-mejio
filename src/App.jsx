@@ -1,32 +1,35 @@
 import React, { useState, useEffect } from "react";
 import LoginForm from "./components/LoginForm";
 import SignupForm from "./components/SignUpForm";
-import { BrowserRouter as Router, Routes, Route, } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
 import WelcomePage from "./components/WelcomePage";
 import Dashboard from "./components/Dashboard";
-
+import BankAccount from "./components/BankAccount";
 
 function App() {
+  const [user, setUser] = useState();
 
   return (
     <Router>
-      <div className="flex flex-col border-solid border-gray-400">
+      <header>
+        <nav>
+          <NavLink to="/">Home</NavLink>
+          <NavLink to="login">Login</NavLink>
+          <NavLink to="signup">Signup</NavLink>
+        </nav>
+      </header>
+      <main>
         <Routes>
-          <Route path="welcome" element={<WelcomePage />}></Route>
+          <Route path="/" element={<WelcomePage />} />
+          <Route path="login" element={<LoginForm setUser={setUser} />} />
+          <Route path="signup" element={<SignupForm />} />
+          <Route path="dashboard" element={<Dashboard user={user} />} />
+          <Route path="deposit" element={<Deposit />} />
+          <Route path="withdraw" element={<Withdraw />} />
         </Routes>
-        <Routes>
-          <Route path="login" element={<LoginForm />}></Route>
-        </Routes>
-        <Routes>
-          <Route path="signup" element={<SignupForm />}></Route>
-        </Routes>
-        <Routes>
-          <Route path="dashboard" element={<Dashboard />}></Route>
-        </Routes>
-      </div>
+      </main>
     </Router>
-    
   );
 }
 
-export default App; 
+export default App;
