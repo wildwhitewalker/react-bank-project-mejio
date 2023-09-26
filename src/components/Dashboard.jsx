@@ -2,19 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 
-function Dashboard({ user }) {
+function Dashboard() {
   const [accountNumber, setAccountNumber] = useState("");
   const [accountBalance, setAccountBalance] = useState(0);
+  const [accountName, setAccountName] =useState("")
 
   useEffect(() => {
-    const savedAccounts = JSON.parse(localStorage.getItem("accounts")) || [];
-    const currentUser = savedAccounts.find((account) => account.userName === user);
-
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  
     if (currentUser) {
       setAccountNumber(currentUser.accountNumber);
       setAccountBalance(currentUser.accountBalance);
+      setAccountName(currentUser.firstName)
     }
-  }, [user]);
+  }, []);
 
   const navigate =useNavigate();
   
@@ -32,7 +33,7 @@ function Dashboard({ user }) {
 
   return (
     <>
-      <p>Welcome {user}</p>
+      <p>Welcome {accountName}!</p>
       <p>Account Number: {accountNumber}</p>
       <p>Account Balance: {accountBalance}</p>
       <button onClick={onTransfer}>Transfer</button>

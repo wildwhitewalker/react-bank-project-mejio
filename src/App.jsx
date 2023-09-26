@@ -4,10 +4,12 @@ import SignupForm from "./components/SignUpForm";
 import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
 import WelcomePage from "./components/WelcomePage";
 import Dashboard from "./components/Dashboard";
-import BankAccount from "./components/BankAccount";
+import Deposit from "./components/Deposit";
+import Withdraw from "./components/Withdraw";
+import TransferFunds from "./components/TransferFunds";
+
 
 function App() {
-  const [user, setUser] = useState();
 
   return (
     <Router>
@@ -21,11 +23,12 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<WelcomePage />} />
-          <Route path="login" element={<LoginForm setUser={setUser} />} />
+          <Route path="login" element={<LoginForm />} />
           <Route path="signup" element={<SignupForm />} />
-          <Route path="dashboard" element={<Dashboard user={user} />} />
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="deposit" element={<Deposit />} />
           <Route path="withdraw" element={<Withdraw />} />
+          <Route path="transfer" element={<TransferFunds />} />
         </Routes>
       </main>
     </Router>

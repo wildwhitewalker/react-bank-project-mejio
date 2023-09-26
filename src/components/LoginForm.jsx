@@ -54,12 +54,10 @@ function LoginForm({setUser}) {
       return;
     }
 
-    if (
-      foundUser.userName === loginData.userName &&
-      foundUser.password === loginData.password
-    ) {
-      setUser(foundUser.userName); 
-      navigate('/dashboard');
+    if (foundUser.userName === loginData.userName && foundUser.password === loginData.password) {
+      localStorage.setItem("currentUser", JSON.stringify(foundUser));
+      setUser(foundUser.userName);
+      navigate("/dashboard");
     }
   };
   const OnClick = () => {

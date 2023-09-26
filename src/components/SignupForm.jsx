@@ -11,7 +11,7 @@ function SignupForm() {
     userName: '',
     password: '',
     accountNumber: '', 
-    accountBalance: '',
+    accountBalance: 0,
   });
 
   const handleChange = (e) => {
