@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const WelcomePage = () => {
+function WelcomePage() {
   const navigate = useNavigate();
 
   const onSignup = () => {
@@ -13,14 +13,16 @@ const WelcomePage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-green-100">
-      <div className="bg-white p-8 rounded shadow-md max-w-md">
+      <div className="flex flex-col items-center justify-center bg-white p-8 rounded shadow-md max-w-md">
         <h1 className="text-3xl font-semibold text-center text-green-700 mb-4">
           Welcome to React Bank
         </h1>
+        <p className="text-center text-gray-700 mb-6">
+          The best way to manage your money.
+        </p>
         <div className="mb-6">
           <label className="text-gray-700">
             Don't have an account?
-            <br/>
             <button
               onClick={onSignup}
               className="ml-2 text-green-600 hover:underline focus:outline-none"
@@ -43,6 +45,6 @@ const WelcomePage = () => {
       </div>
     </div>
   );
-};
+}
 
 export default WelcomePage;
