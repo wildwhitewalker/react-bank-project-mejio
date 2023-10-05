@@ -43,15 +43,14 @@ function TransactionHistory({ transactions, currencySymbol = "Php", itemsPerPage
       <div className="mt-4 flex justify-between">
         <button 
           className="p-2 border rounded"
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} // Ensure it doesn't go below 1
-          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} 
         >
           Previous
         </button>
         <span>Page {currentPage} of {totalPages}</span>
         <button 
           className="p-2 border rounded"
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} // Ensure it doesn't exceed total pages
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages}
         >
           Next

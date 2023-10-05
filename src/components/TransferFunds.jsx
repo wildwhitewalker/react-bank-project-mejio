@@ -54,12 +54,11 @@ function TransferFunds({ currentUser, onUpdateCurrentUser }) {
       return;
     }
 
-    // Calculate updated balances
+    
     const updatedSenderBalance = senderBalance - parseFloat(transactionAmount);
     const updatedRecipientBalance =
       parseFloat(recipient.accountBalance) + parseFloat(transactionAmount);
 
-    // Update the balances in the accounts array
     const updatedAccounts = accounts.map((account) => {
       if (account.accountNumber === recipient.accountNumber) {
         account.accountBalance = updatedRecipientBalance.toFixed(2);
@@ -67,14 +66,14 @@ function TransferFunds({ currentUser, onUpdateCurrentUser }) {
       return account;
     });
 
-    // Update local storage with the updated account balances
+ 
     localStorage.setItem("accounts", JSON.stringify(updatedAccounts));
 
-    // Update currentUser with the new balance
+
     const updatedCurrentUser = { ...currentUser, accountBalance: updatedSenderBalance.toFixed(2) };
     onUpdateCurrentUser(updatedCurrentUser);
 
-    // Reset form fields
+
     setTransactionAmount(0);
     setRecipientDetails({
       firstName: "",
@@ -82,7 +81,6 @@ function TransferFunds({ currentUser, onUpdateCurrentUser }) {
       accountNumber: "",
     });
 
-    // Provide a success message or redirect to a success page
     alert("Funds transferred successfully!");
   };
 
