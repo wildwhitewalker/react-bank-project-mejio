@@ -1,95 +1,94 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function TransferFunds({ currentUser, onUpdateCurrentUser }) {
-  const [transactionAmount, setTransactionAmount] = useState(0);
-  const [recipientDetails, setRecipientDetails] = useState({
-    firstName: "",
-    lastName: "",
-    accountNumber: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setRecipientDetails({
-      ...recipientDetails,
-      [name]: value,
-    });
-  };
-
- 
-  const navigate = useNavigate();
-  
-  const handleTransaction = (e) => {
-    e.preventDefault();
-    if (!transactionAmount || isNaN(transactionAmount)) {
-      alert("Please enter a valid amount to transfer.");
-      return;
-    }
-
-    const senderBalance = parseFloat(currentUser.accountBalance);
-
-    if (parseFloat(transactionAmount) > senderBalance) {
-      alert("Insufficient balance to transfer that amount.");
-      return;
-    }
-
-    if (!recipientDetails.accountNumber) {
-      alert("Please enter the recipient's account number.");
-      return;
-    }
-
-    if (recipientDetails.accountNumber === currentUser.accountNumber) {
-      alert("You cannot transfer funds to the same account.");
-      return;
-    }
-
-    const accounts = JSON.parse(localStorage.getItem("accounts"));
-    const recipient = accounts.find(
-      (account) => account.accountNumber === recipientDetails.accountNumber
-    );
-
-    if (!recipient) {
-      alert("Recipient account not found.");
-      return;
-    }
-
-    
-    const updatedSenderBalance = senderBalance - parseFloat(transactionAmount);
-    const updatedRecipientBalance =
-      parseFloat(recipient.accountBalance) + parseFloat(transactionAmount);
-
-    const updatedAccounts = accounts.map((account) => {
-      if (account.accountNumber === recipient.accountNumber) {
-        account.accountBalance = updatedRecipientBalance.toFixed(2);
-      }
-      return account;
+function TransferFunds({ onUpdateCurrentUser }) {
+    const [transactionAmount, setTransactionAmount] = useState(0);
+    const [recipientDetails, setRecipientDetails] = useState({
+        firstName: "",
+        lastName: "",
+        accountNumber: "",
     });
 
- 
-    localStorage.setItem("accounts", JSON.stringify(updatedAccounts));
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setRecipientDetails({
+            ...recipientDetails,
+            [name]: value,
+        });
+    };
 
+    const navigate = useNavigate();
 
-    const updatedCurrentUser = { ...currentUser, accountBalance: updatedSenderBalance.toFixed(2) };
-    onUpdateCurrentUser(updatedCurrentUser);
+    const handleTransaction = (e) => {
 
+        if (!transactionAmount || isNaN(transactionAmount)) {
+            alert("Please enter a valid amount to transfer.");
+            return;
+        }
 
-    setTransactionAmount(0);
-    setRecipientDetails({
-      firstName: "",
-      lastName: "",
-      accountNumber: "",
-    });
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const senderBalance = parseFloat(currentUser.accountBalance);
 
-    alert("Funds transferred successfully!");
-  };
+        if (parseFloat(transactionAmount) > senderBalance) {
+            alert("Insufficient balance to transfer that amount.");
+            return;
+        }
 
-  const onCancel = () => {
-    navigate("/dashboard");
-  };
+        if (!recipientDetails.accountNumber) {
+            alert("Please enter the recipient's account number.");
+            return;
+        }
+
+        if (recipientDetails.accountNumber === currentUser.accountNumber) {
+            alert("You cannot transfer funds to the same account.");
+            return;
+        }
+
+        const accounts = JSON.parse(localStorage.getItem("accounts"));
+        const recipient = accounts.find(
+            (account) => account.accountNumber === recipientDetails.accountNumber
+        );
+
+        if (!recipient) {
+            alert("Recipient account not found.");
+            return;
+        }
+
+        const updatedSenderBalance = senderBalance - parseFloat(transactionAmount);
+        const updatedRecipientBalance = parseFloat(recipient.accountBalance) + parseFloat(transactionAmount);
+
+        const updatedAccounts = accounts.map((account) => {
+            if (account.accountNumber === recipient.accountNumber) {
+                account.accountBalance = updatedRecipientBalance.toFixed(2);
+            }
+            return account;
+        });
+
+        localStorage.setItem("accounts", JSON.stringify(updatedAccounts));
+
+        if (!currentUser.transactions) {
+            currentUser.transactions = [];
+        }
+        const newTransaction = {
+            date: new Date().toISOString(),
+            description: `Transferred Balance to ${recipient.accountNumber}`,
+            amount: parseFloat(transactionAmount),
+        };
+        currentUser.transactions.push(newTransaction);
+        currentUser.accountBalance = updatedSenderBalance.toFixed(2);
+
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+        alert("Funds transferred successfully!");
+        navigate("/dashboard");
+    };
+
+    const onCancel = () => {
+        navigate("/dashboard");
+    };
 
   return (
-    <div className="bg-gradient-to-r from-yellow-300 via-red-500 to-purple-500 min-h-screen flex items-center justify-center text-white">
+    <div className="min-h-screen flex items-center justify-center text-black">
       <div className="bg-white bg-opacity-20 p-6 rounded-lg shadow-lg text-center">
         <h2 className="text-3xl font-semibold mb-4">Transfer Funds</h2>
         <form

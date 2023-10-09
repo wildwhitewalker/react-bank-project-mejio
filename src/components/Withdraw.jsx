@@ -1,36 +1,39 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Withdraw({ currentUser, onWithdraw }) {
+function Withdraw() {
   const [withdrawAmount, setWithdrawAmount] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleWithdraw = () => {
-    setErrorMessage("");  // Reset the error message
 
     if (withdrawAmount <= 0) {
       setErrorMessage("Please enter a valid amount to withdraw.");
       return;
     }
 
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
     if (withdrawAmount > currentUser.accountBalance) {
       setErrorMessage("Insufficient Balance");
       return;
     }
 
-    const updatedTransactions = [
-      ...currentUser.transactions,
-      {
+    const currentAccountBalance = currentUser.accountBalance;
+    const updatedAccountBalance = currentAccountBalance - parseFloat(withdrawAmount);
+
+    currentUser.accountBalance = updatedAccountBalance;
+
+    const newTransactions = {
         date: new Date().toISOString(),
-        description: `Withdrawn ${withdrawAmount}`,
+        description: `Withdrawn Balance from Own Account`,
         amount: parseFloat(withdrawAmount),
-      },
-    ];
+    };
+    
+    currentUser.transactions.push(newTransactions);
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-    currentUser.accountBalance -= parseFloat(withdrawAmount);
-
-    onWithdraw(withdrawAmount, updatedTransactions);
     navigate("/dashboard", { state: { message: "Withdrawn successfully!" } });
   };
 
@@ -39,11 +42,11 @@ function Withdraw({ currentUser, onWithdraw }) {
   };
 
   return (
-    <div className="container bg-gradient-to-r from-yellow-300 via-red-500 to-purple-500 min-h-screen flex flex-col items-center justify-center text-white">
+    <div className="container min-h-screen flex flex-col items-center justify-center text-black">
       <h2 className="text-3xl font-semibold mb-4">Withdraw</h2>
       {errorMessage && <p className="text-red-500 mb-2">{errorMessage}</p>}
       <div className="bg-white bg-opacity-20 p-6 rounded-lg shadow-lg text-center">
-        <label className="text-lg">Enter Amount</label>
+        <label className="text-lg">Enter Amount </label>
         <input
           type="number"
           value={withdrawAmount}

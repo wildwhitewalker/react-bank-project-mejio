@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import './SignupForm.css';
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function SignupForm() {
@@ -27,22 +28,23 @@ function SignupForm() {
   const navigate = useNavigate();
 
   const generateAccountNumber = () => {
-    const existingAccountNumbers =
-      JSON.parse(localStorage.getItem("accounts")) || [];
+    const existingAccountNumbers = JSON.parse(localStorage.getItem("accounts")) || [];
     let newAccountNumber;
-
     do {
-      newAccountNumber = String(
-        Math.floor(1000000000 + Math.random() * 9000000000)
-      );
+      newAccountNumber = String(Math.floor(1000000000 + Math.random() * 9000000000));
     } while (
-      existingAccountNumbers.some(
-        (account) => account.accountNumber === newAccountNumber
-      )
+      existingAccountNumbers.some(account => account.accountNumber === newAccountNumber)
     );
-
     return newAccountNumber;
   };
+
+  useEffect(() => {
+    const newAccountNum = generateAccountNumber();
+    setSignupData(prevData => ({
+      ...prevData,
+      accountNumber: newAccountNum,
+    }));
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -59,13 +61,7 @@ function SignupForm() {
       alert("Username or Email already exists.");
       return;
     }
-
-    const newAccountNumber = generateAccountNumber();
-    setSignupData((prevData) => ({
-      ...prevData,
-      accountNumber: newAccountNumber,
-    }));
-
+    
     savedAccounts.push(signupData);
 
     localStorage.setItem("accounts", JSON.stringify(savedAccounts));
@@ -79,21 +75,19 @@ function SignupForm() {
   };
 
   return (
-    <div className="signup-form flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-yellow-300 via-red-500 to-purple-500">
-      <h2 className="text-3xl font-semibold text-white mb-6">Sign Up</h2>
+    <div className="signup-form">
+      <h2>Sign Up</h2>
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded shadow-md max-w-md"
       >
         <div className="mb-4">
-          <label className="text-gray-700">First Name:</label>
+          <label>First Name:</label>
           <input
             type="text"
             name="firstName"
             value={signupData.firstName}
             onChange={handleChange}
             required
-            className="border border-gray-100 rounded px-3 py-2 focus:outline-none focus:border-green-500"
           />
         </div>
         <div className="mb-4">
@@ -103,70 +97,64 @@ function SignupForm() {
             name="middleName"
             value={signupData.middleName}
             onChange={handleChange}
-            className="border border-gray-100 rounded px-3 py-2 focus:outline-none focus:border-green-500"
           />
         </div>
         <div className="mb-4">
-          <label className="text-gray-700">Last Name:</label>
+          <label>Last Name:</label>
           <input
             type="text"
             name="lastName"
             value={signupData.lastName}
             onChange={handleChange}
             required
-            className="border border-gray-100 rounded px-3 py-2 focus:outline-none focus:border-green-500"
           />
         </div>
         <div className="mb-4">
-          <label className="text-gray-700">Phone Number:</label>
+          <label>Phone Number:</label>
           <input
             type="number"
             name="phoneNumber"
             value={signupData.phoneNumber}
             onChange={handleChange}
             required
-            className="border border-gray-100 rounded px-3 py-2 focus:outline-none focus:border-green-500"
           />
         </div>
         <div className="mb-4">
-          <label className="text-gray-700">Email:</label>
+          <label>Email:</label>
           <input
             type="email"
             name="email"
             value={signupData.email}
             onChange={handleChange}
             required
-            className="border border-gray-100 rounded px-3 py-2 focus:outline-none focus:border-green-500"
           />
         </div>
         <div className="mb-4">
-          <label className="text-gray-700">Username:</label>
+          <label>Username:</label>
           <input
             type="text"
             name="userName"
             value={signupData.userName}
             onChange={handleChange}
             required
-            className="border border-gray-100 rounded px-3 py-2 focus:outline-none focus:border-green-500"
           />
         </div>
         <div className="mb-4">
-          <label className="text-gray-700">Password:</label>
+          <label>Password:</label>
           <input
             type="password"
             name="password"
             value={signupData.password}
             onChange={handleChange}
             required
-            className="border border-gray-100 rounded px-3 py-2 focus:outline-none focus:border-green-500"
           />
         </div>
-        <div className="mb-4">
-          <label className="text-gray-700">
-            <input type="checkbox" required />
-            Accept Terms and Condition
-          </label>
-        </div>
+          <div className="mb-4">
+            <label>
+              <input type="checkbox" required /> 
+              Accept Terms and Condition
+            </label>
+          </div>
         <button
           type="submit"
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 focus:outline-none"

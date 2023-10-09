@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Deposit({ onDeposit }) {
+function Deposit() {
   const [depositAmount, setDepositAmount] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -11,20 +11,24 @@ function Deposit({ onDeposit }) {
       setErrorMessage("Please enter a valid amount.");
       return;
     }
+
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    const updatedTransactions = [
-      ...currentUser.transactions,
-      {
-        date: new Date().toISOString(),
-        description: `Deposited ${depositAmount}`,
-        amount: parseFloat(depositAmount),
-      },
-    ];
+    const currentAccountBalance = currentUser.accountBalance;
+  
+    const updatedAccountBalance = currentAccountBalance + parseFloat(depositAmount);
+    
+    currentUser.accountBalance = updatedAccountBalance;
+    
+    const newTransaction = {
+      date: new Date().toISOString(),
+      description: `Deposited Balance to Own Account`,
+      amount: parseFloat(depositAmount),
+    };
+  
+    currentUser.transactions.push(newTransaction);
 
-    currentUser.accountBalance += parseFloat(depositAmount);
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
-
-    onDeposit(depositAmount, updatedTransactions);
+  
     navigate("/dashboard", { state: { message: "Deposit successful!" } });
   };
 
@@ -33,13 +37,13 @@ function Deposit({ onDeposit }) {
   };
 
   return (
-    <div className="container bg-gradient-to-r from-yellow-300 via-red-500 to-purple-500 min-h-screen flex flex-col items-center justify-center text-white">
+    <div className="containe min-h-screen flex flex-col items-center justify-center text-black">
       <h2 className="text-3xl font-semibold mb-4">Deposit Funds</h2>
       {errorMessage && (
         <p className="text-red-500 mb-2">{errorMessage}</p>
       )}
       <div className="bg-white bg-opacity-20 p-6 rounded-lg shadow-lg text-center">
-        <label className="text-lg">Enter Amount</label>
+        <label className="text-lg">Enter Amount </label>
         <input
           type="number"
           value={depositAmount}

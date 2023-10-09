@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import TransactionHistory from "./TransactionHistory";
+import BudgetTracker from "./BudgetTracker";
+import Sidebar from "./Sidebar";
+import './Dashboard.css';
 
 function Dashboard({ currentUser }) {
   const [account, setAccount] = useState({
@@ -14,20 +18,16 @@ function Dashboard({ currentUser }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    try {
-      const storedUser = JSON.parse(localStorage.getItem("currentUser"));
-      if (storedUser) {
-        setAccount({
-          number: storedUser.accountNumber,
-          balance: storedUser.accountBalance,
-          name: storedUser.firstName,
-          fullName: `${storedUser.firstName} ${storedUser.lastName}`,
-          budgets: storedUser.budgets || {},
-          transactions: storedUser.transactions || [],
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
+    const storedUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (storedUser) {
+      setAccount({
+        number: storedUser.accountNumber,
+        balance: storedUser.accountBalance,
+        name: storedUser.firstName,
+        fullName: `${storedUser.firstName} ${storedUser.lastName}`,
+        budgets: storedUser.budgets || {},
+        transactions: storedUser.transactions || [],
+      });
     }
   }, [currentUser]);
 
@@ -35,44 +35,80 @@ function Dashboard({ currentUser }) {
   const onWithdraw = () => navigate("/withdraw");
   const onDeposit = () => navigate("/deposit");
 
+  const addBudget = (name, amount) => {
+    const newBudgets = { ...account.budgets, [name]: amount };
+    const newTransactions = [...account.transactions, { date: new Date().toISOString(), description: `Budget for ${name}`, amount: -amount }];
+    const newBalance = account.balance - amount;
+    
+    setAccount({
+        ...account,
+        budgets: newBudgets,
+        transactions: newTransactions,
+        balance: newBalance
+    });
+  };
+
+  const removeBudget = (name) => {
+      const returnedAmount = account.budgets[name];
+      const newTransactions = [...account.transactions, { date: new Date().toISOString(), description: `Returned from ${name} budget`, amount: returnedAmount }];
+      const newBalance = account.balance + returnedAmount;
+
+      const newBudgets = { ...account.budgets };
+      delete newBudgets[name];
+      
+      setAccount({
+          ...account,
+          budgets: newBudgets,
+          transactions: newTransactions,
+          balance: newBalance
+      });
+  };
+
+  const onUpdateCurrentUser = (updatedUser) => {
+    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+  };
+
   return (
-    <div className="dashboard bg-gradient-to-r from-yellow-300 via-red-500 to-purple-500 min-h-screen flex-col items-center justify-center text-black grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div className="bg-white bg-opacity-20 p-6 rounded-lg shadow-lg text-center">
-        <h2 className="text-3xl font-semibold mb-4">Welcome {account.name}!</h2>
-        <p className="text-lg mb-4">{account.fullName}</p>
-        <p className="text-lg mb-4">Account Number: {account.number}</p>
-        <p className="text-lg mb-4">Account Balance: Php{account.balance}</p>
-        <div className="space-x-4">
-          <button
-            onClick={onTransfer}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            Transfer
-          </button>
-          <button
-            onClick={onDeposit}
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-          >
-            Deposit
-          </button>
-          <button
-            onClick={onWithdraw}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-          >
-            Withdraw
-          </button>
+    <div className="dashboard">
+      <header className="header">
+      <div className="sidebar">
+          <Sidebar />
+      </div>
+        <h1>Welcome {account.name}!</h1>
+        <div>
+            <button className="button button-blue">Get the App</button><span />
+            <button className="button button-blue">Apply for a Loan</button> <span />
+              <button onClick={onTransfer} className="btn bg-blue-500 text-white">Transfer</button> <span />
+              <button onClick={onDeposit} className="btn bg-green-500 text-white">Deposit</button>  <span />
+              <button onClick={onWithdraw} className="btn bg-red-500 text-white">Withdraw</button>  <span />
+         </div>
+      </header> 
+
+      <div className="main-section">
+        <div className="main-content">
+          <div className="details-section">
+            <div className="card account-details">
+              <h1>Php {account.balance}</h1>
+              <h3>{account.number}</h3>
+              <p>{account.fullName}</p>
+              
+            </div>
+
+            <div className="card budget">
+            <BudgetTracker 
+              budgets={account.budgets}
+              onAddBudget={addBudget}
+              onRemoveBudget={removeBudget}
+              onUpdateCurrentUser={onUpdateCurrentUser}
+              />
+            </div>
+          </div>
+
+          <div className="transactionHistory">
+            <TransactionHistory transactions={account.transactions} />
+          </div>
+
         </div>
-      </div>
-
-      <div className="col-span-2">
-        <BudgetTracker
-          budgets={account.budgets}
-          accountBalance={account.balance}
-        />
-      </div>
-
-      <div className="col-span-2 mt-8">
-        <TransactionHistory transactions={account.transactions} />
       </div>
     </div>
   );

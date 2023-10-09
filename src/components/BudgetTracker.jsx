@@ -1,26 +1,29 @@
 import React, { useState } from "react";
 
-function BudgetTracker({ budgets, onAddBudget, onRemoveBudget, accountBalance, onUpdateBalance }) {
+function BudgetTracker({ budgets, onAddBudget, onRemoveBudget, onUpdateCurrentUser }) {
   const [budgetName, setBudgetName] = useState("");
-  const [budgetAmount, setBudgetAmount] = useState("");
+  const [budgetAmount, setBudgetAmount] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const accountBalance = parseFloat(currentUser.accountBalance);
+  
   const handleAddBudget = () => {
-    setErrorMessage("");  
+    setErrorMessage("");
 
-    const parsedAmount = parseFloat(budgetAmount);
+    const allocatedAmount = parseFloat(budgetAmount);
 
-    if (!budgetName || !budgetAmount) {
+    if (!budgetName || !allocatedAmount) {
       setErrorMessage("Please enter a budget name and amount.");
       return;
     }
 
-    if (parsedAmount <= 0) {
+    if (allocatedAmount <= 0) {
       setErrorMessage("Please enter a valid budget amount.");
       return;
     }
 
-    if (parsedAmount > accountBalance) {
+    if (allocatedAmount > accountBalance) {
       setErrorMessage("Insufficient account balance to allocate this budget.");
       return;
     }
@@ -30,22 +33,39 @@ function BudgetTracker({ budgets, onAddBudget, onRemoveBudget, accountBalance, o
       return;
     }
 
-    onAddBudget(budgetName, parsedAmount);
-    onUpdateBalance(accountBalance - parsedAmount);
+    onAddBudget(budgetName, allocatedAmount);
+    const updatedUser = {
+      ...currentUser,
+      budgets: { ...currentUser.budgets, [budgetName]: allocatedAmount },
+      transactions: [...currentUser.transactions, { date: new Date().toISOString(), description: `Budget for ${budgetName}`, amount: -allocatedAmount }],
+      accountBalance: currentUser.accountBalance - allocatedAmount
+    };
+    onUpdateCurrentUser(updatedUser);
+
     setBudgetName("");
-    setBudgetAmount("");
+    setBudgetAmount(0);
   };
 
   const handleRemoveBudget = (budgetName) => {
-    const returnedAmount = budgets[budgetName];
-    onUpdateBalance(accountBalance + returnedAmount);
+    const returnedAmount = currentUser.budgets[budgetName];
+    const newBudgets = { ...currentUser.budgets };
+    delete newBudgets[budgetName];
+    
+    const updatedUser = {
+      ...currentUser,
+      budgets: newBudgets,
+      transactions: [...currentUser.transactions, { date: new Date().toISOString(), description: `Returned from ${budgetName} budget`, amount: returnedAmount }],
+      accountBalance: currentUser.accountBalance + returnedAmount
+    };
     onRemoveBudget(budgetName);
+    onUpdateCurrentUser(updatedUser);
   };
 
+
   return (
-      <div className="bg-white p-4 rounded shadow-md w-full">
+    <div className="bg-white p-4 rounded shadow-md w-full">
       <h3 className="text-2xl font-semibold mb-4 border-b pb-2">Budget Tracker</h3>
-        {errorMessage && <p className="text-red-500 mb-2">{errorMessage}</p>}
+      {errorMessage && <p className="text-red-500 mb-2">{errorMessage}</p>}
       <div className="flex justify-between items-center mb-4">
         <input
           type="text"

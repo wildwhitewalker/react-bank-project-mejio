@@ -31,7 +31,7 @@ function Sidebar() {
 
     return (
    <>
-    <IconContext.Provider value={{color:'white'}}>
+    <IconContext.Provider value={{color:'black'}}>
       <div className="sidebar">
       <Link to="#" className="menu-bars">
         <FaIcons.FaBars onClick={showSidebar} />
@@ -39,19 +39,23 @@ function Sidebar() {
       </div>
       <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
         <ul className='nav-menu-items' onClick={showSidebar}>
-          <li className="navbar-toggle"></li>
-          {SidebarData.map((item, index) => {
-            return (
-              <li key={index} className={item.cName}>
-                <Link to={item.path}>
-                  {item.icon}
-                  <span>{item.title}</span>
-                </Link>
-              </li>
-            );
-          })}
+          <div>
+            <li className="navbar-toggle"><span />EXIT</li>
+            {SidebarData.map((item, index) => {
+              return (
+                <li key={index} className={item.cName}>
+                  <Link to={item.path}>
+                    {item.icon}
+                    <span>{item.title}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </div>
+          <div className='logout'>
+          <button onClick={onLogout}>Logout</button>
+          </div>
         </ul>
-        <button onCLick={onLogout}>Logout</button>
       </nav>
       </IconContext.Provider>
     </>

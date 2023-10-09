@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import './LoginForm.css';
 
 function LoginForm({ setUser }) {
   const [loginData, setLoginData] = useState({
@@ -25,7 +26,7 @@ function LoginForm({ setUser }) {
       setErrorMessage("Error accessing saved accounts.");
       return;
     }
-    
+
     const foundUser = savedAccounts.find(
       (account) => account.userName === loginData.userName
     );
@@ -35,60 +36,45 @@ function LoginForm({ setUser }) {
       return;
     }
 
-    setUser(foundUser.accountNumber);
     localStorage.setItem("currentUser", JSON.stringify(foundUser));
     
     navigate("/dashboard");
   };
 
-  const onClickSignup = () =>{
+  const onClickRegister = () =>{
     navigate("/signup");
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-yellow-300 via-red-500 to-purple-500">
-      <h2 className="text-3xl font-semibold text-white mb-6">Login</h2>
-      <form onSubmit={onSubmit} className="bg-white p-8 rounded shadow-md max-w-md">
-        <div className="mb-4">
-          <label className="text-gray-700">Username:</label>
+    <div className="min-h-screen">
+      <form
+      onSubmit={onSubmit}>
+        <div className="form-container">
+          <h2>Login to your account</h2>
+          <label className="text-gray-700">Username</label>
           <input
-            type="text"
-            name="userName"
-            value={loginData.userName}
-            onChange={onChange}
-            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-green-500"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="text-gray-700">Password:</label>
+              type="text"
+              name="userName"
+              value={loginData.userName}
+              onChange={onChange}
+              className="input-field"
+            />
+          <label className="text-gray-700">Password</label>
           <input
-            type="password"
-            name="password"
-            value={loginData.password}
-            onChange={onChange}
-            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-green-500"
-          />
-        </div>
-        <div>
-        {errorMessage && (
-            <small className="text-red-500">{errorMessage}</small>
+              type="password"
+              name="password"
+              value={loginData.password}
+              onChange={onChange}
+              className="input-field"
+            />
+          {errorMessage && (
+              <div className="text-red-500">{errorMessage}</div>
           )}
-        </div>
-        <button
-          type="submit"
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 focus:outline-none"
-        >
-          Log in
-        </button>
-        <div className="mt-2 text-gray-700">
-          Don't have an account?{" "}
-          <button
-            onClick={onClickSignup}
-            className="text-green-500 hover:underline focus:outline-none"
-          >
-            Signup
-          </button>
+          <button type="sunmit" className="btn">Login</button>
+          <div onClick={onClickRegister}>Register Now</div>
+          <div>Forgot Username or Password</div>
+          <div>Lock My Access</div>
+          <div>Inquiry and Other Services ▼</div>
         </div>
       </form>
     </div>
