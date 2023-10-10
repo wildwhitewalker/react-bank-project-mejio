@@ -39,7 +39,7 @@ function LoginForm({ setUser }) {
     localStorage.setItem("currentUser", JSON.stringify(foundUser));
     
     setUser(foundUser);
-    
+
     navigate("/dashboard");
   };
 

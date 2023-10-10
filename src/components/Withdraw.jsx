@@ -34,7 +34,8 @@ function Withdraw() {
     currentUser.transactions.push(newTransactions);
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-    navigate("/dashboard", { state: { message: "Withdrawn successfully!" } });
+    alert("Withdrawn Balance from Account!");
+    navigate("/dashboard");
   };
 
   const onCancel = () => {

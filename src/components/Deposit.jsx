@@ -28,8 +28,8 @@ function Deposit() {
     currentUser.transactions.push(newTransaction);
 
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
-  
-    navigate("/dashboard", { state: { message: "Deposit successful!" } });
+    alert("Deposited Balance to Own Account!");
+    navigate("/dashboard");
   };
 
   const onCancel = () => {
