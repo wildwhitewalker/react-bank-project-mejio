@@ -28,7 +28,7 @@ function LoginForm({ setUser }) {
     }
 
     const foundUser = savedAccounts.find(
-      (account) => account.userName === loginData.userName
+      (account) => account.userName === loginData.userName && account.password === loginData.password
     );
 
     if (!foundUser || foundUser.password !== loginData.password) {
@@ -37,6 +37,8 @@ function LoginForm({ setUser }) {
     }
 
     localStorage.setItem("currentUser", JSON.stringify(foundUser));
+    
+    setUser(foundUser);
     
     navigate("/dashboard");
   };

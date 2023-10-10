@@ -5,7 +5,7 @@ import BudgetTracker from "./BudgetTracker";
 import Sidebar from "./Sidebar";
 import './Dashboard.css';
 
-function Dashboard({ currentUser }) {
+function Dashboard() {
   const [account, setAccount] = useState({
     number: "",
     balance: 0,
@@ -29,7 +29,7 @@ function Dashboard({ currentUser }) {
         transactions: storedUser.transactions || [],
       });
     }
-  }, [currentUser]);
+  }, []);
 
   const onTransfer = () => navigate("/transfer");
   const onWithdraw = () => navigate("/withdraw");

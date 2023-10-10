@@ -11,7 +11,6 @@ function TransactionHistory({ transactions, itemsPerPage = 5 }) {
 
   useEffect(() => {
     const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
-    const totalPages = Math.ceil(sortedTransactions.length / itemsPerPage);
     const startIdx = (currentPage - 1) * itemsPerPage;
     const endIdx = startIdx + itemsPerPage;
     setPaginatedTransactions(sortedTransactions.slice(startIdx, endIdx));

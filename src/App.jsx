@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, NavLink, Link } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import Dashboard from "./components/Dashboard";
@@ -9,11 +9,13 @@ import Withdraw from "./components/Withdraw";
 import TransferFunds from "./components/TransferFunds";
 
 function App() {
+  const [currentUser, setCurrentUser] = useState("")
+
   return (
     <Router>
       <main className="container">
         <Routes>
-          <Route path="/login" element={<LoginForm />} />
+          <Route path="/login" element={<LoginForm setUser={setCurrentUser} />} />
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="transfer" element={<TransferFunds />} />
