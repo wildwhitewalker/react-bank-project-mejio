@@ -1,31 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, NavLink, Link } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
-import SignupForm from "./components/SignUpForm";
-import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
-import WelcomePage from "./components/WelcomePage";
 import Dashboard from "./components/Dashboard";
-import BankAccount from "./components/BankAccount";
+import WelcomePage from "./components/WelcomePage";
+import SignupForm from "./components/SignupForm";
+import Deposit from "./components/Deposit";
+import Withdraw from "./components/Withdraw";
+import TransferFunds from "./components/TransferFunds";
 
 function App() {
-  const [user, setUser] = useState();
+  const [currentUser, setCurrentUser] = useState("")
 
   return (
     <Router>
-      <header>
-        <nav>
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="login">Login</NavLink>
-          <NavLink to="signup">Signup</NavLink>
-        </nav>
-      </header>
-      <main>
+      <main className="container">
         <Routes>
-          <Route path="/" element={<WelcomePage />} />
-          <Route path="login" element={<LoginForm setUser={setUser} />} />
-          <Route path="signup" element={<SignupForm />} />
-          <Route path="dashboard" element={<Dashboard user={user} />} />
+          <Route path="/login" element={<LoginForm setUser={setCurrentUser} />} />
+          <Route path="/signup" element={<SignupForm />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="transfer" element={<TransferFunds />} />
           <Route path="deposit" element={<Deposit />} />
           <Route path="withdraw" element={<Withdraw />} />
+          <Route path="*" element={<WelcomePage />} />
         </Routes>
       </main>
     </Router>

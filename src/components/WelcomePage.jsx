@@ -1,48 +1,41 @@
+import './WelcomePage.css';
 import { useNavigate } from "react-router-dom";
+import * as BsIcons from "react-icons/bs";
 
-const WelcomePage = () => {
-  const navigate = useNavigate();
+function WelcomePage() {
+    const navigate = useNavigate();
 
-  const onSignup = () => {
-    navigate("/signup");
-  };
+    const onSignup = () => {
+        navigate("/signup");
+    };
 
-  const onLogin = () => {
-    navigate("/login");
-  };
+    const onLogin = () => {
+        navigate("/login");
+    };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-green-100">
-      <div className="bg-white p-8 rounded shadow-md max-w-md">
-        <h1 className="text-3xl font-semibold text-center text-green-700 mb-4">
-          Welcome to React Bank
-        </h1>
-        <div className="mb-6">
-          <label className="text-gray-700">
-            Don't have an account?
-            <br/>
-            <button
-              onClick={onSignup}
-              className="ml-2 text-green-600 hover:underline focus:outline-none"
-            >
-              Signup
-            </button>
-          </label>
+    return (
+        <div className="welcome-page-bg">
+            <div className="header">
+                <div className='flex'>
+                <BsIcons.BsBank2 className="bank-icon" /><span />
+                <h1>React Bank</h1>
+                </div>
+                <div className="header-options">Investor Relations | Governance | Sustainability | News</div>
+                <div>
+                <button className="login-button" onClick={onLogin}>LOGIN</button><span />
+                <button className="signup-button" onClick={onSignup}>REGISTER</button>
+                </div>
+            </div>
+
+            <div className="main-content">
+                <img src="https://assets.landingi.com/wp-content/uploads/2020/08/20151600/okladka-2-02.png" alt="Woman" className="woman-image"/>
+                <div className="slogan">
+                    Take sustainable steps today for a better tomorrow
+                    <button className="learn-more-button">LEARN MORE</button>
+                </div>
+            </div>
         </div>
-        <div>
-          <label className="text-gray-700">
-            Already have an account?
-            <button
-              onClick={onLogin}
-              className="ml-2 text-green-600 hover:underline focus:outline-none"
-            >
-              Login
-            </button>
-          </label>
-        </div>
-      </div>
-    </div>
-  );
-};
+    );
+}
 
 export default WelcomePage;
