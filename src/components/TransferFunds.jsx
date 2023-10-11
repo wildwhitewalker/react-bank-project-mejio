@@ -46,7 +46,7 @@ function TransferFunds({ onUpdateCurrentUser }) {
 
         const accounts = JSON.parse(localStorage.getItem("accounts"));
         const recipient = accounts.find(
-            (account) => account.accountNumber === recipientDetails.accountNumber
+            (account) => account.accountNumber === recipientDetails.accountNumber && account.firstName === recipientDetails.firstName
         );
 
         if (!recipient) {

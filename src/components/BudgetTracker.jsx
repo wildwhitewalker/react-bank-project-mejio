@@ -9,8 +9,7 @@ function BudgetTracker({ budgets, onAddBudget, onRemoveBudget, onUpdateCurrentUs
   const accountBalance = parseFloat(currentUser.accountBalance);
   
   const handleAddBudget = () => {
-    setErrorMessage("");
-
+    
     const allocatedAmount = parseFloat(budgetAmount);
 
     if (!budgetName || !allocatedAmount) {
@@ -42,6 +41,7 @@ function BudgetTracker({ budgets, onAddBudget, onRemoveBudget, onUpdateCurrentUs
     };
     onUpdateCurrentUser(updatedUser);
 
+    setErrorMessage("");
     setBudgetName("");
     setBudgetAmount(0);
   };
@@ -57,6 +57,7 @@ function BudgetTracker({ budgets, onAddBudget, onRemoveBudget, onUpdateCurrentUs
       transactions: [...currentUser.transactions, { date: new Date().toISOString(), description: `Returned from ${budgetName} budget`, amount: returnedAmount }],
       accountBalance: currentUser.accountBalance + returnedAmount
     };
+    setErrorMessage("");
     onRemoveBudget(budgetName);
     onUpdateCurrentUser(updatedUser);
   };
